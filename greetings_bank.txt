@@ -1,0 +1,60 @@
+You can test the regular expression here: https://regexr.com/
+
+/h?(o+la+|o+l+i+(s?)|a+l+o+|e+ll+o+|k+o+n+i+c+h+i+w+a+|^h+i+\s|0+l+a+|^h+e+y+)i?a*?/gim
+This regular expression matches all of these words examples.
+
+Hola
+hola
+hoLA
+HOLA
+Holi
+holi
+HOOOLI
+H0LA
+hola
+hola mundo
+ola xd
+OLA
+OlA
+HolA
+hi
+hello
+hiiiiiiiiii
+hhhhhhiiiiiiii
+hiiiiiiiiii
+olaaa
+olaa
+oooolaaaa
+konichiwa
+kooooooniiiichiiiiwaaaa 
+kkoooonichiwa 
+kkkoooonniiiiccchhhiiiiwwaaaaa
+helllooooooo
+heeeeeeeellloooooooooo
+HI
+HI
+hi everyone
+hey hey hey
+hey todos
+heeeey 
+heeeeeeeeeey
+hhhhheeeeeeeey
+heeeeeeyyyyyyyyyyyyyy
+hhhhhhhheeeeeeeeeeeeeeyyyyy
+hey 
+h0000la
+h0000laaaaaaaaa
+hoolis 
+oliiiis
+oooooolaaaaaaa
+koonichiwaaaa
+ooooooolaaaaaaaaa prrooooos
+oliiiis
+holis 
+oliii
+oooooooliis
+konichiwa
+hiiiiiiiiiiii
+hhhhhhhhiiiiiiiii
+hi everyone
+hi todos
