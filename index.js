@@ -1,6 +1,6 @@
-const {Client, MessageEmbed, Emoji, MessageReaction} =  require('discord.js');
 const Discord = require('discord.js');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
+const mysql = require('mysql');
 
 const Tenor = require("tenorjs").client({
   "Key": "W01WZ7UAQS0A", // https://tenor.com/developer/keyregistration
@@ -10,7 +10,6 @@ const Tenor = require("tenorjs").client({
   "DateFormat": "D/MM/YYYY - H:mm:ss A" // Change this accordingly
 });
 
-const mysql = require('mysql');
 
 var con = mysql.createConnection({
   host: 'localhost',
@@ -37,7 +36,6 @@ con.end;
 
 //var CronJob = require('cron').CronJob;
 
-
 var idMessage = "";
 var idClient = "";
 var objMessage = new Discord.Message();
@@ -49,7 +47,7 @@ var option3 = 1;
 
 var objMessage = new Discord.Message();
 
-client.login('ODQ2NTM0MTUzNjc5MjczOTk0.YKw6Xg.L9LCqRk34auNA9414Fw9UT9AyHk');
+client.login('');
 
 client.on('ready', () => {
     client.user.setActivity("Memes", {
@@ -70,7 +68,7 @@ function between(min, max) {
 client.on('message', async (message) => {
   objMessage = message; //global
 
-  const title = new MessageEmbed()
+  const title = new Discord.MessageEmbed()
   .setTitle('⬜⬜⬜⬛⬛')
   .setColor('BLUE');
 
@@ -113,13 +111,6 @@ client.on('message', async (message) => {
 
     //Receiving the message
 
-      if(message.content === 'search'){
-        (async function(){
-          console.log(await getGif());
-        })();
-      }
-
-    
     console.log(message.content); 
     if(message.content === 'test'){
 
@@ -202,7 +193,6 @@ client.on('message', async (message) => {
         const dance = client.emojis.cache.get("846633562513997854");
         const no = client.emojis.cache.get("846100084864843817");
 
-
         switch(greeting)
         {
             case 1: message.channel.send(`${left} ${right}`); break;
@@ -217,19 +207,10 @@ client.on('message', async (message) => {
     }
 });
 
-
-
-// Emit the event
-
-
 client.on('messageReactionAdd', async (reaction, user) => {
   if(reaction.message.id === idMessage && user.id != idClient){
-   if(reaction.emoji.name === '1️⃣' || reaction.emoji.name === '2️⃣' || reaction.emoji.name === '3️⃣'){
-
- 
-
+   if(reaction.emoji.name === '1️⃣' || reaction.emoji.name === '2️⃣' || reaction.emoji.name === '3️⃣')
     updatePoll(reaction);
-   }
   }
 });
 
@@ -240,7 +221,6 @@ client.on('messageReactionRemove', (reaction, user) => {
      updatePoll(reaction);
    }
 });
-
 
 function countReactions(messageObj){
   //let arrayReactions = Array.from({ length: 3 }, (_, idx) => 0);
@@ -263,15 +243,14 @@ function getArrayReactions(messageObj){
   return arrayReactions;
 }
 
-
 async function updatePoll(reaction){
   getFetched(reaction);
 
-  let dataVotes = countReactions(objMessage);
-  console.log('datavotes: ' + dataVotes);
+  let dataReactions = countReactions(objMessage);
+  console.log('datavotes: ' + dataReactions);
   //data base.
 
-  let porcentages = calculatePorcentage(dataVotes);
+  let porcentages = calculatePorcentage(dataReactions);
   let pollUpdated = await generatePoll(porcentages);
   reaction.message.edit(pollUpdated);
 }
@@ -313,40 +292,33 @@ function calculatePorcentage(arrayVotes){
 }
 
 async function generatePoll(porcentages){
+  let topicTitle = getWinnerTopic();
+  let urlGif = await getUrlGif(topicTitle);
   let progressBar = generateProgressBar(porcentages);
 
-  const poll = createPoll(progressBar,porcentages);
+  const poll = await createPoll(progressBar,porcentages,urlGif);
   return poll;
 }
 
-function test (Results){
+async function  getWinnerTopic(){
+  titles = getTitles();
 
 }
 
+async function getTitles(){
 
-function createPoll(progressBar, porcentages){
-  let random = between(0,24);
+}
 
-    function valor(){
-      let xdxd = "";
+async function getUrlGif(searchElement){
+  let result = await Tenor.Search.Random(searchElement,'1');
 
-      Tenor.Search.Random("food", "1").then(
-        xdxd = Results => {
-          for (let i = 0; i < Results.length; i++) {
-            //console.log(`Item ${Results[i].url}`);
-            return Results[i].url;
-          }
-      })
-      return xdxd;
-    }
-    
-    let aaa = valor();
-    
-    console.log(aaa);
+  for (let i = 0; i < result.length; i++) {
+    return result[0].media[0].gif.url;
+  }
+}
 
-
-
-  const poll = new MessageEmbed()
+async function createPoll(progressBar, porcentages,urlGif){
+  const poll = new Discord.MessageEmbed()
   .addField('1️⃣ League of Legends',progressBar[0] + ' - ' + porcentages[0] + '%')
   .addField('2️⃣ Programación',progressBar[1] + ' - ' + porcentages[1] + '%')
   .addField('3️⃣ Minecraft',progressBar[2] + ' - ' + porcentages[2] + '%')
@@ -355,12 +327,9 @@ function createPoll(progressBar, porcentages){
     { name: '\u200B', value: '\u200B'},
     { name: '\u200B', value: '**Más votado** : *League of Legends*', inline: true },
   )
-  .setImage()
+  .setImage(urlGif)
   .setTimestamp()
   .setFooter('Reacciona para votar', 'https://i.pinimg.com/736x/3f/a3/a1/3fa3a17031811cf7d77813bcc373bee1.jpg');
   
   return poll;
 }
-
-
-
