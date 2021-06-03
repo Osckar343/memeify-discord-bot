@@ -1,6 +1,15 @@
 const Discord = require('discord.js');
+require('discord-reply');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 const mysql = require('mysql');
+
+var Scraper = require('images-scraper');
+const google = new Scraper({
+  puppeteer: {
+    headless: true,
+  },
+});
+
 
 const Tenor = require("tenorjs").client({
   "Key": "W01WZ7UAQS0A", // https://tenor.com/developer/keyregistration
@@ -46,9 +55,9 @@ var option2 = 1;
 var option3 = 1;
 
 var objMessage = new Discord.Message();
-
-client.login('');
-
+var bandera = 0;
+client.login('ODQ2NTM0MTUzNjc5MjczOTk0.YKw6Xg.qJBvrlTARK2MJZlRtjxdsOxTWOA');
+// ODQ2MTMwNjA1MzIyMTQxNzY2.YKrCiA.7tyFA2Dx6CChpkniPmwPDFe81fI  ODQ2NTM0MTUzNjc5MjczOTk0.YKw6Xg.qJBvrlTARK2MJZlRtjxdsOxTWOA
 client.on('ready', () => {
     client.user.setActivity("Memes", {
         type: "WATCHING",
@@ -57,6 +66,9 @@ client.on('ready', () => {
     console.log('Bot is ready as ' + client.user.tag);  
     console.log('ID Client: ' + client.user.id);
     idClient = client.user.id;
+
+
+
 });
 
 function between(min, max) {  
@@ -68,22 +80,43 @@ function between(min, max) {
 client.on('message', async (message) => {
   objMessage = message; //global
 
-  const title = new Discord.MessageEmbed()
-  .setTitle('⬜⬜⬜⬛⬛')
+
+
+  if(message.content === 'a'){
+    message.lineReply('Hey'); //Line (Inline) Reply with mention
+  }
+  
+  if(message.content == 'xdxd'){
+    message.lineReplyNoMention('My name is ' + (await (await client.user.fetch('330183814863257602')).username));
+  }
+  //message.lineReplyNoMention(`My name is ${client.user.username}`); //Line (Inline) Reply without mention
+  //message.channel.send('XDXDXD @330183814863257602');
+  
+  
+  const generating = new Discord.MessageEmbed()
+  .setDescription('*GENERANDO ENCUESTA*')
   .setColor('BLUE');
 
-  if(message.content == 'write'){
-    let sent = await message.channel.send(title);
-    idMessage = sent.id; // you can get its ID with <Message>.id, as usually
+  const generated = new Discord.MessageEmbed()
+  .setDescription('**Reacciona para empezar la encuesta.**')
+  .setColor('BLUE');
 
+  
+
+  if(message.content == 'write'){
+    let sent = await message.channel.send(generating);
+
+    idMessage = sent.id; // you can get its ID with <Message>.id, as usually
+    channelId = sent.channel;
+    
     message.channel.messages.fetch(idMessage)
       .then(message =>  
                   message.react('1️⃣')
       .then(() => message.react('2️⃣'))
       .then(() => message.react('3️⃣'))
+      .then(() => message.edit(generated))
       .catch(error => console.error('One of the emojis failed to react:', error))
-    )
-    .catch(console.error);
+    ).catch(console.error);
 
     console.log('ID Del mensaje: ' + idMessage);
   }
@@ -110,6 +143,20 @@ client.on('message', async (message) => {
     job.start();*/
 
     //Receiving the message
+
+    if(message.content === 'search'){
+  
+
+      (async () => {
+        const results = await google.scrape('Memes de League of Legends', 5);
+        //message.channel.send('')
+        for (let i = 0; i < results.length; i++) {
+          message.channel.send(results[i].url);
+        }
+
+        //console.log('results', results);
+      })();
+    }
 
     console.log(message.content); 
     if(message.content === 'test'){
@@ -148,7 +195,7 @@ client.on('message', async (message) => {
     if( message.content.match(allowedGreeting)  && message.author.username !== 'Mine'){
         greeting = between(1,7);
         const ayy = client.emojis.cache.get("771522257532223528");
-        846629293319913485
+        //846629293319913485
         switch(greeting)
         {
             case 1: message.channel.send(`Holi ${message.author.username}!!  ${ayy} ${ayy} ${ayy}`); break;
@@ -208,7 +255,7 @@ client.on('message', async (message) => {
 });
 
 client.on('messageReactionAdd', async (reaction, user) => {
-  if(reaction.message.id === idMessage && user.id != idClient){
+  if(reaction.message.id === idMessage && user.id != client.user.id){
    if(reaction.emoji.name === '1️⃣' || reaction.emoji.name === '2️⃣' || reaction.emoji.name === '3️⃣')
     updatePoll(reaction);
   }
@@ -216,7 +263,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 
 
 client.on('messageReactionRemove', (reaction, user) => {
-  if(reaction.message.id === idMessage && user.id != idClient){
+  if(reaction.message.id === idMessage && user.id != client.user.id){
     if(reaction.emoji.name === '1️⃣' || reaction.emoji.name === '2️⃣' || reaction.emoji.name === '3️⃣')
      updatePoll(reaction);
    }
@@ -310,7 +357,7 @@ async function getTitles(){
 }
 
 async function getUrlGif(searchElement){
-  let result = await Tenor.Search.Random(searchElement,'1');
+  let result = await Tenor.Search.Random('Halo','1');
 
   for (let i = 0; i < result.length; i++) {
     return result[0].media[0].gif.url;
@@ -329,6 +376,7 @@ async function createPoll(progressBar, porcentages,urlGif){
   )
   .setImage(urlGif)
   .setTimestamp()
+  .setColor('BLUE')
   .setFooter('Reacciona para votar', 'https://i.pinimg.com/736x/3f/a3/a1/3fa3a17031811cf7d77813bcc373bee1.jpg');
   
   return poll;
