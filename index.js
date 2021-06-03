@@ -20,29 +20,6 @@ const Tenor = require("tenorjs").client({
 });
 
 
-var con = mysql.createConnection({
-  host: 'localhost',
-  database: 'memeify',
-  user: 'root',
-  password: '',
-});
-
-con.connect(function(error){
-  if(error)
-    throw error;
-  else 
-    console.log('Connected to database');
-});
-
-let sql = 'INSERT INTO bot (bot_id)'
-
-con.query('SELECT * FROM bot', function(error, result, fields){
-  if(error) throw err;
-  console.log(result);
-});
-
-con.end;
-
 //var CronJob = require('cron').CronJob;
 
 var idMessage = "";
@@ -163,11 +140,11 @@ client.on('message', async (message) => {
 
       let porcentaje = 100;
 
-        const title = new MessageEmbed()
+        const title = new Discord.MessageEmbed()
         .setTitle('**ATENCIÓN!!!** Se abre votación para escoger nuevo *TOPIC*!!')
         .setColor('BLUE');
 
-        const poll = new MessageEmbed()
+        const poll = new Discord.MessageEmbed()
           .addField('1️⃣ League of Legends','⬜⬜⬜⬛⬛⬛⬛⬛⬛⬛' + ' - ' + porcentaje + '%')
           .addField('2️⃣ Programación','⬜⬜⬜⬜⬜⬛⬛⬛⬛⬛' + ' - ' + porcentaje + '%')
           .addField('3️⃣ Minecraft','⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜' + ' - ' + porcentaje + '%')
@@ -193,7 +170,7 @@ client.on('message', async (message) => {
     const allowedGreeting = /h?(o+la+|o+l+i+(s?)|a+l+o+|e+ll+o+|k+o+n+i+c+h+i+w+a+|^h+i+\s|0+l+a+|^h+e+y+)i?a*?/gim;
     
     if( message.content.match(allowedGreeting)  && message.author.username !== 'Mine'){
-        greeting = between(1,7);
+        let greeting = between(1,7);
         const ayy = client.emojis.cache.get("771522257532223528");
         //846629293319913485
         switch(greeting)
@@ -231,7 +208,7 @@ client.on('message', async (message) => {
       }
 
       if(message.content === "**random"){
-        greeting = between(1,6);
+        let greeting = between(1,6);
         const left = client.emojis.cache.get('846629136008478731');
         const right = client.emojis.cache.get("846629293319913485");
         const angry = client.emojis.cache.get("846633284708073472");
