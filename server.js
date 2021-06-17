@@ -1,24 +1,47 @@
+const fs = require('fs');
+const { prefix, token, tenorApiKey } = require('./config.json');
+
 const Discord = require('discord.js');
-require('discord-reply');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 const mysql = require('mysql');
 
-var Scraper = require('images-scraper');
-const google = new Scraper({
-  puppeteer: {
-    headless: true,
-  },
-});
+
 
 
 const Tenor = require("tenorjs").client({
-  "Key": "W01WZ7UAQS0A", // https://tenor.com/developer/keyregistration
+  "Key": tenorApiKey, // https://tenor.com/developer/keyregistration
   "Filter": "off", // "off", "low", "medium", "high", not case sensitive
   "Locale": "en_US", // Your locale here, case-sensitivity depends on input
   "MediaFilter": "minimal", // either minimal or basic, not case sensitive
   "DateFormat": "D/MM/YYYY - H:mm:ss A" // Change this accordingly
 });
 
+
+client.commands = new Discord.Collection();
+client.cooldowns = new Discord.Collection();
+
+const commandFolders = fs.readdirSync('./commands');
+
+for(const folder of commandFolders){
+  const commandFiles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js'));
+  for (const file of commandFiles) {
+    const command = require(`./commands/${folder}/${file}`);
+    client.commands.set(command.name, command);
+  }
+}
+
+  /*var job = new CronJob(
+      '* * * * * *',
+      function() {
+        console.log('every second');
+      },
+      null,
+      false,
+      'America/Los_Angeles'
+    );  
+    job.start();*/
+
+    //Receiving the message
 
 //var CronJob = require('cron').CronJob;
 
@@ -33,19 +56,17 @@ var option3 = 1;
 
 var objMessage = new Discord.Message();
 var bandera = 0;
-client.login('ODQ2NTM0MTUzNjc5MjczOTk0.YKw6Xg.qJBvrlTARK2MJZlRtjxdsOxTWOA');
-// ODQ2MTMwNjA1MzIyMTQxNzY2.YKrCiA.7tyFA2Dx6CChpkniPmwPDFe81fI  ODQ2NTM0MTUzNjc5MjczOTk0.YKw6Xg.qJBvrlTARK2MJZlRtjxdsOxTWOA
+
+client.login(token);
+
 client.on('ready', () => {
-    client.user.setActivity("Memes", {
-        type: "WATCHING",
+    client.user.setActivity("Minecraft", {
+        type: "PLAYING",
       });
 
     console.log('Bot is ready as ' + client.user.tag);  
     console.log('ID Client: ' + client.user.id);
     idClient = client.user.id;
-
-
-
 });
 
 function between(min, max) {  
@@ -55,9 +76,45 @@ function between(min, max) {
   }
 
 client.on('message', async (message) => {
-  objMessage = message; //global
+  if(!message.content.startsWith(prefix) || message.author.bot) return; //If the message either doesn't start with the prefix or the author is a bot, exit early
+
+  const args = message.content.slice(prefix.length).trim().split(/ +/);
+  const commandName = args.shift().toLowerCase();
+  
+  if (!client.commands.has(commandName)) return; //if command doesn't exists
+
+  const command = client.commands.get(commandName);
+
+  if (command.args && !args.length) { //If command has args but user doesn't provide them 
+    let reply = `You didn't provide any arguments, ${message.author}!`;
+
+    if (command.usage) {
+      reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
+      reply += `\n\nFor example: \`${prefix}${command.name} ${command.usageExample}\``;
+    }
+
+    return message.channel.send(reply);
+  }
+
+	try {
+		command.execute(message, args);
+	} catch (error) {
+		console.error(error);
+		message.reply('there was an error trying to execute that command!');
+	}
+
+  /*if (command === 'ping') {
+		message.channel.send('Pong.');
+	} else if (command === 'args-info') {
+		if (!args.length) {
+			return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
+		}
+
+		message.channel.send(`Command name: ${command}\nArguments: ${args}`);
+	}*/
 
 
+  /*objMessage = message; //global
 
   if(message.content === 'a'){
     message.lineReply('Hey'); //Line (Inline) Reply with mention
@@ -69,7 +126,6 @@ client.on('message', async (message) => {
   //message.lineReplyNoMention(`My name is ${client.user.username}`); //Line (Inline) Reply without mention
   //message.channel.send('XDXDXD @330183814863257602');
   
-  
   const generating = new Discord.MessageEmbed()
   .setDescription('*GENERANDO ENCUESTA*')
   .setColor('BLUE');
@@ -77,8 +133,6 @@ client.on('message', async (message) => {
   const generated = new Discord.MessageEmbed()
   .setDescription('**Reacciona para empezar la encuesta.**')
   .setColor('BLUE');
-
-  
 
   if(message.content == 'write'){
     let sent = await message.channel.send(generating);
@@ -108,24 +162,11 @@ client.on('message', async (message) => {
       });
   }
   
-    /*var job = new CronJob(
-      '* * * * * *',
-      function() {
-        console.log('every second');
-      },
-      null,
-      false,
-      'America/Los_Angeles'
-    );  
-    job.start();*/
-
-    //Receiving the message
-
-    if(message.content === 'search'){
   
 
+    if(message.content === 'search'){
       (async () => {
-        const results = await google.scrape('Memes de League of Legends', 5);
+        const results = await google.scrape('Memes de Genshin Impact', 30);
         //message.channel.send('')
         for (let i = 0; i < results.length; i++) {
           message.channel.send(results[i].url);
@@ -172,7 +213,6 @@ client.on('message', async (message) => {
     if( message.content.match(allowedGreeting)  && message.author.username !== 'Mine'){
         let greeting = between(1,7);
         const ayy = client.emojis.cache.get("771522257532223528");
-        //846629293319913485
         switch(greeting)
         {
             case 1: message.channel.send(`Holi ${message.author.username}!!  ${ayy} ${ayy} ${ayy}`); break;
@@ -228,7 +268,7 @@ client.on('message', async (message) => {
             default: break;
         }
         message.delete();
-    }
+    } */
 });
 
 client.on('messageReactionAdd', async (reaction, user) => {

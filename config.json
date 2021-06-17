@@ -1,0 +1,12 @@
+{
+    "prefix": "!",
+    "token": "ODQ2NTM0MTUzNjc5MjczOTk0.YKw6Xg.xpbnuJ6zOMh9emB9bZ-PG1sqQ1w",
+    "tenorApiKey": "W01WZ7UAQS0A",
+
+    "meaning_of_life": 42,
+	"passwords_array": ["please", "dont", "hack", "me"],
+	"secret_passcodes": {
+		"bank": 1234,
+		"home": 4321
+	}
+}
