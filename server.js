@@ -1,6 +1,5 @@
 const fs = require('fs');
 const { prefix, token, tenorApiKey } = require('./config.json');
-const aws = require('aws-sdk');
 
 const Discord = require('discord.js');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
@@ -60,11 +59,10 @@ var objMessage = new Discord.Message();
 var bandera = 0;
 
 //token
-let s3 = new aws.S3({
-  accessToken: process.env.token,
-});
 
-client.login(s3.accessToken);
+const accessToken = process.env.TOKEN;
+
+client.login(accessToken);
 
 client.on('ready', () => {
     client.user.setActivity("Minecraft", {
@@ -83,6 +81,37 @@ function between(min, max) {
   }
 
 client.on('message', async (message) => {
+
+  const allowedGreeting = /h?(o+la+|o+l+i+(s?)|a+l+o+|e+ll+o+|k+o+n+i+c+h+i+w+a+|^h+i+\s|0+l+a+|^h+e+y+)i?a*?/gim;
+
+  if(message.content.includes('mine') || message.content.includes('Mine')){
+    message.channel.send('https://i.imgur.com/3ZzX2sy.png');
+  } else if (message.content.match(allowedGreeting)  && message.author.username !== 'Mine' ){
+    let greeting = between(1,7);
+    const ayy = client.emojis.cache.get("771522257532223528");
+    switch(greeting)
+    {
+        case 1: message.channel.send(`Holi ${message.author.username}!!  ${ayy} ${ayy} ${ayy}`); break;
+        case 2: message.channel.send(`Holaa ${message.author.username}!!  ${ayy} ${ayy} ${ayy}`); break;
+        case 3: message.channel.send(`Que tal ${message.author.username}!!  ${ayy} ${ayy} ${ayy}`); break;
+        case 4: message.channel.send(`Muy buenas ${message.author.username}!!  ${ayy} ${ayy} ${ayy}`); break;
+        case 5: message.channel.send(`Un gustazo ${message.author.username}!!  ${ayy} ${ayy} ${ayy}`); break;
+        case 6: message.channel.send(`Buenas ${message.author.username}!!  ${ayy} ${ayy} ${ayy}`); break;
+        case 7: message.channel.send(`Mucho gusto ${message.author.username}!!  ${ayy} ${ayy} ${ayy}`); break;
+    }
+  }
+
+  if(message.content === 'a'){
+     message.channel.send('Hey'); //Line (Inline) Reply with mention
+  }
+    
+  if(message.content == 'xdxd'){
+     message.channel.send('My name is ' + (await (await client.user.fetch('330183814863257602')).username));
+  }
+
+ 
+
+
   if(!message.content.startsWith(prefix) || message.author.bot) return; //If the message either doesn't start with the prefix or the author is a bot, exit early
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
