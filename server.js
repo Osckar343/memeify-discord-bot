@@ -1,5 +1,6 @@
 const fs = require('fs');
 const { prefix, token, tenorApiKey } = require('./config.json');
+const aws = require('aws-sdk');
 
 const Discord = require('discord.js');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
@@ -7,6 +8,7 @@ const mysql = require('mysql');
 
 //hola esto es un cambio 0w0
 
+//esto es otro cambio
 
 const Tenor = require("tenorjs").client({
   "Key": tenorApiKey, // https://tenor.com/developer/keyregistration
@@ -57,7 +59,11 @@ var option3 = 1;
 var objMessage = new Discord.Message();
 var bandera = 0;
 
-client.login(token);
+let s3 = new aws.S3({
+  accessToken: process.env.token,
+});
+
+client.login(accessToken);
 
 client.on('ready', () => {
     client.user.setActivity("Minecraft", {
