@@ -63,7 +63,7 @@ let s3 = new aws.S3({
   accessToken: process.env.token,
 });
 
-client.login(accessToken);
+client.login(s3.accessToken);
 
 client.on('ready', () => {
     client.user.setActivity("Minecraft", {
