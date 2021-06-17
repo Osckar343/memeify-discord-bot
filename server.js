@@ -5,7 +5,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 const mysql = require('mysql');
 
-
+//hola esto es un cambio 0w0
 
 
 const Tenor = require("tenorjs").client({
