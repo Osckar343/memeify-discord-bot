@@ -60,9 +60,7 @@ var bandera = 0;
 
 //token
 
-const accessToken = process.env.TOKEN;
-
-client.login(accessToken);
+client.login(process.env.DJS_TOKEN);
 
 client.on('ready', () => {
     client.user.setActivity("Minecraft", {
