@@ -59,6 +59,7 @@ var option3 = 1;
 var objMessage = new Discord.Message();
 var bandera = 0;
 
+//token
 let s3 = new aws.S3({
   accessToken: process.env.token,
 });
