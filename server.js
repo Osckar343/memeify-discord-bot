@@ -21,6 +21,12 @@ client.on('ready', () => {
     console.log('ID Client: ' + client.user.id);
 });
 
+//Bienvenida a nuevo amiwuito
+client.on("guildMemberAdd", miembro =>{
+  var Canal = client.channels.find(channel = channel.id === ("612084758620405763"));
+  Canal.send("Te voe a buscar <@" + miembro.id + "> y cuando te encuentre, te mataré");
+});
+
 client.on('message', async (message) => {
 	if (message.author.bot) return; //if bot sends a message, exit inmediately.
 
