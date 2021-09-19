@@ -43,4 +43,4 @@ client.on('message', async (message) => {
   }
 });
 
-client.login(process.env.DJS_TOKEN);
+client.login("ODQ2NTM0MTUzNjc5MjczOTk0.YKw6Xg.e7UsfGgAY2GFoNx0uKiQXupMkno");
