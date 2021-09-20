@@ -22,7 +22,7 @@ client.on('ready', () => {
 });
 
 //Bienvenida a nuevo amiwuito
-bot.on('guildMemberAdd', async member => {
+client.on('guildMemberAdd', async member => {
   const channel = member.guild.channels.cache.get('612084758620405763'); //General chat
   if (!channel) return;
 
