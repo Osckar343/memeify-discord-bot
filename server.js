@@ -22,9 +22,11 @@ client.on('ready', () => {
 });
 
 //Bienvenida a nuevo amiwuito
-client.on("guildMemberAdd", miembro =>{
-  var Canal = client.channels.find(channel = channel.id === ("612084758620405763"));
-  Canal.send("Te voe a buscar <@" + miembro.id + "> y cuando te encuentre, te mataré");
+bot.on('guildMemberAdd', async member => {
+  const channel = member.guild.channels.cache.get('612084758620405763'); //General chat
+  if (!channel) return;
+
+  channel.send(`Te voe a buscar <@${member.id}> y cuando te encuentre, te mataré >:3`);
 });
 
 client.on('message', async (message) => {
@@ -43,4 +45,4 @@ client.on('message', async (message) => {
   }
 });
 
-client.login("ODQ2NTM0MTUzNjc5MjczOTk0.YKw6Xg.e7UsfGgAY2GFoNx0uKiQXupMkno");
+client.login(process.env.DJS_TOKEN);
